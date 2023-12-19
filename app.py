@@ -1,5 +1,10 @@
 import streamlit as st
 import tensorflow as tf
+from PIL import Image, ImageOps
+import cv2
+import numpy as np
+from pyngrok import ngrok
+from keras.preprocessing.image import img_to_array
 
 
 @st.cache(allow_output_mutation=True)
@@ -26,12 +31,10 @@ def import_and_predict(image_data, model):
         image = np.asarray(image)
         img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         #img_resize = (cv2.resize(img, dsize=(75, 75),interpolation=cv2.INTER_CUBIC))/255.
-
         img_reshape = img[np.newaxis,...]
-
         prediction = model.predict(img_reshape)
-
         return prediction
+  
 if file is None:
     st.text("Please upload an image file")
 else:
@@ -46,3 +49,8 @@ else:
     .format(class_names[np.argmax(score)], 100 * np.max(score))
 )
 
+# Mengonfigurasi pyngrok untuk membuat tunnel
+public_url = ngrok.connect(port='8501')
+
+# Menampilkan URL ngrok
+st.write('**Ngrok Tunnel URL:**', public_url)
